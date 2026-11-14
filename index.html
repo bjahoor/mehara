@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <title>Mehara</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#062e22" />
         <meta http-equiv="cache-control" content="max-age=0" />
         <meta http-equiv="cache-control" content="no-cache" />
         <meta http-equiv="expires" content="0" />
@@ -11,324 +12,475 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Pinyon+Script&display=swap"
             rel="stylesheet"
         />
         <style>
+            /* ===== tokens: jewel-tone emerald, burgundy, antique gold, cream ===== */
             :root {
-                --emerald-900: #04261a;
-                --emerald-800: #063d2a;
-                --emerald-700: #0a5c3f;
-                --emerald-500: #169c6a;
-                --maroon-900: #3d0812;
-                --maroon-700: #6e1423;
-                --maroon-500: #8f1d30;
-                --cream: #f7efe4;
-                --gold: #d9b779;
+                --emerald-950: #031c14;
+                --emerald-900: #062e22;
+                --emerald-800: #0b3f2f;
+                --emerald-700: #0f4d3a;
+                --emerald-500: #1f7a5a;
+                --emerald-300: #5fb592;
+                --wine-950: #2b0710;
+                --wine-900: #4a0b19;
+                --wine-700: #7a1026;
+                --wine-500: #9c2238;
+                --wine-300: #c9566b;
+                --gold: #caa24b;
+                --gold-soft: #e3c98f;
+                --cream: #f7ecdc;
+                --paper: #fbf5ea;
+                --ink: #3a0a14;
+
+                --serif: "Cormorant Garamond", "Cormorant", Garamond, "Times New Roman", serif;
+                --script: "Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
+                --caps: "Cinzel", "Trajan Pro", Georgia, serif;
+                --ease: cubic-bezier(0.22, 1, 0.36, 1);
             }
-            * { box-sizing: border-box; }
+
+            /* fluid scale: phone ~15px, tablet ~19px, laptop ~20px, 1080p TV ~23px, 4K ~39px */
+            html { font-size: clamp(15px, 0.4rem + 1.5vmin, 40px); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+            *, *::before, *::after { box-sizing: border-box; }
             html, body { height: 100%; margin: 0; }
             body {
+                min-height: 100vh;
+                min-height: 100dvh;
                 overflow: hidden;
                 background: var(--emerald-900);
                 color: var(--cream);
-                font-family: "Cormorant Garamond", Georgia, serif;
+                font-family: var(--serif);
                 -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
             }
             .hidden { display: none !important; }
+            .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-            /* ---------- satin backdrop ---------- */
-            .satin {
-                position: fixed; inset: -20%;
+            /* ===== satin: layered broad soft highlights + anisotropic sheen + fine weave noise ===== */
+            .satin { position: fixed; inset: 0; overflow: hidden; background: var(--emerald-900); }
+            .satin .folds {
+                position: absolute; inset: -30%;
                 background:
-                    radial-gradient(120% 80% at 20% 10%, rgba(255,255,255,.10), transparent 55%),
-                    linear-gradient(115deg,
-                        var(--emerald-900) 0%, var(--emerald-700) 18%, var(--emerald-800) 30%,
-                        #0d6e4b 42%, var(--emerald-900) 55%, var(--emerald-700) 70%,
-                        var(--emerald-800) 84%, var(--emerald-900) 100%);
-                background-size: 100% 100%, 300% 300%;
-                animation: drape 18s ease-in-out infinite alternate;
+                    radial-gradient(60% 40% at 25% 20%, rgba(150, 230, 190, 0.16), transparent 70%),
+                    radial-gradient(50% 35% at 80% 75%, rgba(120, 210, 170, 0.12), transparent 70%),
+                    linear-gradient(118deg,
+                        var(--emerald-950) 0%, var(--emerald-800) 11%, var(--emerald-700) 16%, var(--emerald-900) 24%,
+                        var(--emerald-950) 31%, var(--emerald-700) 40%, #16654b 45%, var(--emerald-800) 52%,
+                        var(--emerald-950) 61%, var(--emerald-800) 70%, var(--emerald-700) 76%, var(--emerald-900) 85%,
+                        var(--emerald-950) 100%);
+                background-size: 100% 100%, 100% 100%, 260% 260%;
+                transform: rotate(-4deg) skewY(-3deg);
+                animation: drape 26s ease-in-out infinite alternate;
             }
-            .satin::after { /* moving sheen */
-                content: ""; position: absolute; inset: 0;
-                background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.13) 48%, rgba(255,255,255,.04) 52%, transparent 65%);
-                background-size: 250% 100%;
-                animation: sheen 9s ease-in-out infinite;
+            .satin .sheen {
+                position: absolute; inset: -10%;
+                background: linear-gradient(105deg, transparent 38%, rgba(225, 255, 240, 0.10) 46%, rgba(255, 255, 255, 0.16) 49%, rgba(225, 255, 240, 0.06) 53%, transparent 62%);
+                background-size: 260% 100%;
                 mix-blend-mode: screen;
+                animation: sheen 11s var(--ease) infinite;
             }
-            @keyframes drape { from { background-position: 0 0, 0% 50%; } to { background-position: 0 0, 100% 50%; } }
-            @keyframes sheen { 0% { background-position: 150% 0; } 60%, 100% { background-position: -100% 0; } }
+            .satin .weave {
+                position: absolute; inset: 0; opacity: 0.22; mix-blend-mode: overlay;
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.6 0.25' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            }
+            .satin .vignette {
+                position: absolute; inset: 0;
+                background: radial-gradient(120% 90% at 50% 45%, transparent 45%, rgba(2, 14, 10, 0.65) 100%);
+            }
+            @keyframes drape { from { background-position: 0 0, 0 0, 0% 40%; } to { background-position: 0 0, 0 0, 100% 60%; } }
+            @keyframes sheen { 0% { background-position: 160% 0; } 55%, 100% { background-position: -110% 0; } }
 
-            /* ---------- petals ---------- */
-            #petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+            /* ===== petals ===== */
+            #petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
             .petal {
-                position: absolute; top: -40px;
-                width: 18px; height: 14px;
-                border-radius: 150% 0 150% 0;
-                background: radial-gradient(circle at 30% 30%, #b3364d, var(--maroon-700) 60%, var(--maroon-900));
-                opacity: .9;
+                position: absolute; top: -6vh; left: 0;
+                will-change: transform;
                 animation: fall linear forwards;
             }
-            .petal.leaf { background: radial-gradient(circle at 30% 30%, #2bbf85, var(--emerald-500) 55%, var(--emerald-800)); border-radius: 0 150% 0 150%; }
-            @keyframes fall {
-                to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot)); }
+            .petal svg { display: block; width: 100%; height: 100%; animation: flutter ease-in-out infinite alternate; animation-duration: inherit; }
+            @keyframes fall { to { transform: translate3d(var(--dx), 115vh, 0); } }
+            @keyframes flutter {
+                0% { transform: rotate(0deg) rotateX(0deg); }
+                50% { transform: rotate(calc(var(--rot) * 0.5)) rotateX(60deg); }
+                100% { transform: rotate(var(--rot)) rotateX(10deg); }
             }
 
-            /* ---------- corner florals ---------- */
-            .floral { position: fixed; width: min(42vw, 260px); z-index: 2; pointer-events: none; opacity: .95; }
-            .floral.tl { top: -14px; left: -14px; }
-            .floral.br { bottom: -14px; right: -14px; transform: rotate(180deg); }
+            /* ===== corner bouquets ===== */
+            .bouquet { position: fixed; z-index: 3; pointer-events: none; width: clamp(150px, 34vmin, 760px); filter: drop-shadow(0 0.6rem 1rem rgba(0, 0, 0, 0.35)); }
+            .bouquet.tl { top: calc(-0.08 * clamp(150px, 34vmin, 760px)); left: calc(-0.08 * clamp(150px, 34vmin, 760px)); }
+            .bouquet.br { bottom: calc(-0.08 * clamp(150px, 34vmin, 760px)); right: calc(-0.08 * clamp(150px, 34vmin, 760px)); transform: rotate(180deg); }
 
-            /* ---------- stage ---------- */
+            /* ===== stage ===== */
             .stage {
-                position: relative; z-index: 3;
-                min-height: 100%; display: grid; place-items: center;
-                padding: 16px;
+                position: relative; z-index: 4;
+                min-height: 100vh; min-height: 100dvh;
+                display: flex; align-items: center; justify-content: center; flex-direction: column;
+                padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
             }
-            .loading { color: var(--gold); font-size: 1.2rem; font-style: italic; letter-spacing: .1em; }
+            .loading { font-family: var(--caps); font-size: 0.8rem; letter-spacing: 0.4em; color: var(--gold-soft); opacity: 0.8; animation: breathe 1.8s ease-in-out infinite; }
+            @keyframes breathe { 50% { opacity: 0.35; } }
 
-            /* envelope */
+            .kicker {
+                font-family: var(--caps); font-size: 0.72rem; letter-spacing: 0.45em; text-transform: uppercase;
+                color: var(--gold-soft); margin: 0 0 1.4rem; padding-left: 0.45em; opacity: 0.9;
+                transition: opacity 0.6s, transform 0.8s var(--ease);
+            }
+
+            /* ===== envelope ===== */
             .envelope {
-                position: relative;
-                width: min(88vw, 360px); aspect-ratio: 1.45;
-                cursor: pointer;
-                perspective: 900px;
-                transition: transform .6s cubic-bezier(.2,.8,.2,1);
-                filter: drop-shadow(0 18px 30px rgba(0,0,0,.45));
+                --w: min(84vw, 24rem);
+                position: relative; width: var(--w); height: calc(var(--w) * 0.66);
+                cursor: pointer; outline: none;
+                perspective: 70rem; -webkit-perspective: 70rem;
+                transition: transform 1s var(--ease), opacity 0.8s ease;
+                filter: drop-shadow(0 1.4rem 1.6rem rgba(0, 0, 0, 0.5));
+                animation: float 5s ease-in-out infinite;
             }
-            .envelope:hover { transform: translateY(-4px); }
-            .env-back, .env-front, .env-flap {
-                position: absolute; inset: 0;
-                background: linear-gradient(135deg, #f8efe2, #eadcc6 55%, #f3e7d6);
-                border-radius: 6px;
+            @keyframes float { 50% { transform: translateY(-0.35rem); } }
+            .env-back, .env-front, .env-face {
+                position: absolute; inset: 0; border-radius: 0.35rem;
             }
+            .env-back { background: linear-gradient(160deg, var(--emerald-800), var(--emerald-950)); }
             .env-front {
                 z-index: 3;
-                clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
-                background: linear-gradient(160deg, #f1e4d1, #e2d1b6);
+                -webkit-clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+                clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+                background:
+                    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.07) 45%, transparent 60%),
+                    linear-gradient(200deg, #145c45, var(--emerald-700) 40%, var(--emerald-900));
+            }
+            .env-front::after { /* side seams */
+                content: ""; position: absolute; inset: 0;
+                background:
+                    linear-gradient(to top right, transparent 49.6%, rgba(0, 0, 0, 0.28) 50%, transparent 50.6%) left bottom / 50% 100% no-repeat,
+                    linear-gradient(to top left, transparent 49.6%, rgba(0, 0, 0, 0.28) 50%, transparent 50.6%) right bottom / 50% 100% no-repeat;
             }
             .env-flap {
-                z-index: 4;
-                clip-path: polygon(0 0, 100% 0, 50% 58%);
-                background: linear-gradient(180deg, #efe1cc, #dcc9ac);
-                transform-origin: top center;
-                transition: transform .8s cubic-bezier(.4,0,.2,1), z-index 0s .4s;
+                position: absolute; inset: 0 0 auto 0; height: 60%; z-index: 4;
+                transform-origin: 50% 0;
+                -webkit-transform-style: preserve-3d; transform-style: preserve-3d;
+                transition: transform 0.9s var(--ease), z-index 0s linear 0.45s;
+            }
+            .env-face {
+                -webkit-backface-visibility: hidden; backface-visibility: hidden;
+                -webkit-clip-path: polygon(0 0, 100% 0, 50% 100%);
+                clip-path: polygon(0 0, 100% 0, 50% 100%);
+                border-radius: 0.35rem 0.35rem 0 0;
+            }
+            .env-face.out { background: linear-gradient(180deg, #17664c, var(--emerald-700) 55%, var(--emerald-800)); }
+            .env-face.in { /* printed floral liner */
+                transform: rotateX(180deg);
+                background-color: var(--wine-900);
+                background-image:
+                    radial-gradient(circle at 50% 50%, var(--wine-500) 0 0.18rem, transparent 0.2rem),
+                    radial-gradient(circle at 50% 50%, rgba(202, 162, 75, 0.55) 0 0.08rem, transparent 0.1rem),
+                    radial-gradient(ellipse 0.35rem 0.16rem at 50% 50%, rgba(31, 122, 90, 0.9), transparent 70%);
+                background-size: 1.3rem 1.3rem, 1.3rem 1.3rem, 1.3rem 1.3rem;
+                background-position: 0 0, 0.65rem 0.65rem, 0.65rem 0;
+                box-shadow: inset 0 0 0 0.25rem rgba(202, 162, 75, 0.5);
             }
             .seal {
-                position: absolute; z-index: 5;
-                left: 50%; top: 52%;
-                width: 72px; height: 72px; margin: -36px 0 0 -36px;
-                border-radius: 50%;
-                background: radial-gradient(circle at 35% 30%, #b0283f, var(--maroon-700) 55%, var(--maroon-900));
-                box-shadow: inset 0 0 0 5px rgba(0,0,0,.12), inset 0 -4px 8px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.35);
-                display: grid; place-items: center;
-                transition: transform .5s, opacity .5s;
-                animation: pulse 2.4s ease-in-out infinite;
+                position: absolute; z-index: 6;
+                left: 50%; top: 60%;
+                width: 5.2rem; height: 5.2rem; margin: -2.6rem 0 0 -2.6rem;
+                transition: transform 0.6s var(--ease), opacity 0.5s ease;
+                filter: drop-shadow(0 0.3rem 0.4rem rgba(0, 0, 0, 0.45));
             }
-            .seal svg { width: 44px; height: 44px; }
-            @keyframes pulse { 50% { transform: scale(1.07); } }
+            .seal svg { width: 100%; height: 100%; display: block; overflow: visible; }
+            .seal .glow {
+                position: absolute; inset: -0.6rem; border-radius: 50%;
+                box-shadow: 0 0 0 0 rgba(227, 201, 143, 0.55);
+                animation: ring 2.6s ease-out infinite;
+            }
+            @keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(227, 201, 143, 0.5); } 80%, 100% { box-shadow: 0 0 0 1.1rem rgba(227, 201, 143, 0); } }
+            .envelope:hover .seal, .envelope:focus-visible .seal { transform: scale(1.06) rotate(-4deg); }
+            .envelope:focus-visible { filter: drop-shadow(0 0 0.9rem rgba(227, 201, 143, 0.7)) drop-shadow(0 1.4rem 1.6rem rgba(0, 0, 0, 0.5)); }
             .hint {
-                position: absolute; left: 0; right: 0; bottom: -46px;
-                text-align: center; font-style: italic; color: var(--gold); font-size: 1.1rem; letter-spacing: .05em;
-                transition: opacity .4s;
+                margin-top: 2.6rem; font-style: italic; font-size: 1.15rem; letter-spacing: 0.06em; color: var(--gold-soft);
+                transition: opacity 0.5s;
             }
-            .letter {
-                position: absolute; z-index: 2;
-                left: 6%; right: 6%; top: 8%; bottom: 6%;
-                background: linear-gradient(180deg, #fffaf2, #f6ecdd);
-                border-radius: 4px;
-                transition: transform .9s cubic-bezier(.2,.9,.25,1) .35s;
-            }
-            .envelope.open { cursor: default; transform: translateY(18vh); }
-            .envelope.open:hover { transform: translateY(18vh); }
-            .envelope.open .env-flap { transform: rotateX(180deg); z-index: 1; }
-            .envelope.open .seal { transform: scale(0) rotate(-40deg); opacity: 0; animation: none; }
-            .envelope.open .hint { opacity: 0; }
-            .envelope.open .letter { transform: translateY(-62%); }
+            .hint::before, .hint::after { content: ""; display: inline-block; width: 1.8rem; height: 1px; background: currentColor; opacity: 0.5; vertical-align: middle; margin: 0 0.7rem; }
 
-            /* the card that rises out of the envelope */
+            .opened .kicker, .opened .hint { opacity: 0; }
+            .opened .envelope { animation: none; cursor: default; transform: translateY(40vh) scale(0.9); opacity: 0; transition-delay: 0.9s, 1s; }
+            .opened .env-flap { transform: rotateX(180deg); z-index: 1; }
+            .opened .seal { transform: scale(1.25) rotate(-25deg); opacity: 0; }
+
+            /* ===== card ===== */
             .card {
-                position: fixed; z-index: 6;
-                left: 50%; top: 50%;
-                width: min(90vw, 380px);
-                transform: translate(-50%, -30%) scale(.9);
-                opacity: 0; pointer-events: none;
-                padding: 34px 28px 28px;
-                text-align: center;
-                color: var(--maroon-900);
+                position: fixed; z-index: 7; left: 50%; top: 50%;
+                width: min(90vw, 25rem);
+                max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px);
+                overflow: auto;
+                padding: 2.4rem 2rem 2rem;
+                text-align: center; color: var(--ink);
                 background:
-                    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.9), transparent 60%),
-                    linear-gradient(180deg, #fffaf2, #f4e8d6);
-                border-radius: 10px;
-                border: 1px solid rgba(217,183,121,.6);
-                box-shadow: 0 30px 60px rgba(0,0,0,.45), inset 0 0 0 6px rgba(255,255,255,.5), inset 0 0 0 7px rgba(217,183,121,.45);
-                transition: opacity .7s ease 1s, transform .9s cubic-bezier(.2,.9,.25,1) 1s;
+                    radial-gradient(120% 80% at 50% 0%, #fffdf8, transparent 65%),
+                    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .32  0 0 0 0 .2  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>"),
+                    linear-gradient(180deg, var(--paper), #f1e5d1);
+                border-radius: 0.5rem;
+                box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.5), 0 0.4rem 1rem rgba(0, 0, 0, 0.25);
+                transform: translate(-50%, -20%) scale(0.86);
+                opacity: 0; visibility: hidden;
+                transition: transform 1.1s var(--ease) 0.45s, opacity 0.6s ease 0.45s, visibility 0s linear 1.6s;
             }
-            .card.show { opacity: 1; transform: translate(-50%, -62%) scale(1); pointer-events: auto; }
+            .card::before { /* double gold rule */
+                content: ""; position: absolute; inset: 0.6rem; pointer-events: none;
+                border: 1px solid rgba(202, 162, 75, 0.75);
+                outline: 1px solid rgba(202, 162, 75, 0.35); outline-offset: 0.22rem;
+                border-radius: 0.25rem;
+            }
+            .opened .card { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; transition-delay: 0.45s, 0.45s, 0s; }
+            .card .monogram { width: 3.2rem; height: 3.2rem; margin: 0 auto 0.2rem; display: block; }
             .card h1 {
-                margin: 0; font-family: "Great Vibes", cursive; font-weight: 400;
-                font-size: clamp(2.8rem, 12vw, 3.6rem); color: var(--maroon-700); line-height: 1.05;
+                margin: 0; font-family: var(--script); font-weight: 400;
+                font-size: 3.6rem; line-height: 1.1; color: var(--wine-700);
+                padding: 0 0.2em;
             }
-            .card p { margin: 6px 0 20px; font-size: 1.15rem; font-style: italic; color: var(--emerald-800); }
-            .card .divider { width: 120px; margin: 6px auto 10px; display: block; }
-            .field {
-                position: relative; margin-bottom: 14px;
-            }
+            .flourish { display: block; width: 9rem; height: 1rem; margin: 0.2rem auto 0.8rem; }
+            .card p { margin: 0 0 1.6rem; font-size: 1.2rem; font-style: italic; color: var(--emerald-800); line-height: 1.35; }
+            .field { position: relative; margin: 0 auto 1.4rem; max-width: 17rem; }
+            .field label { display: block; font-family: var(--caps); font-size: 0.62rem; letter-spacing: 0.35em; color: rgba(58, 10, 20, 0.6); margin-bottom: 0.35rem; padding-left: 0.35em; }
             #staticrypt-password {
-                width: 100%;
-                font: inherit; font-size: 1.15rem; text-align: center; letter-spacing: .15em;
-                color: var(--maroon-900);
-                padding: 13px 16px;
-                border: 1px solid rgba(110,20,35,.35);
-                border-radius: 999px;
-                background: rgba(255,255,255,.7);
-                outline: none;
-                transition: border-color .3s, box-shadow .3s;
+                width: 100%; -webkit-appearance: none; appearance: none;
+                font-family: var(--serif); font-size: max(16px, 1.35rem); text-align: center; letter-spacing: 0.18em;
+                color: var(--ink);
+                padding: 0.45rem 0.5rem;
+                border: 0; border-bottom: 1px solid rgba(122, 16, 38, 0.45); border-radius: 0;
+                background: transparent; outline: none;
+                transition: border-color 0.3s;
             }
-            #staticrypt-password::placeholder { color: rgba(61,8,18,.45); letter-spacing: .05em; font-style: italic; }
-            #staticrypt-password:focus { border-color: var(--emerald-500); box-shadow: 0 0 0 4px rgba(22,156,106,.18); }
+            #staticrypt-password::selection { background: rgba(202, 162, 75, 0.35); color: var(--ink); }
+            #staticrypt-password::placeholder { color: rgba(58, 10, 20, 0.35); letter-spacing: 0.06em; font-style: italic; }
+            .field::after {
+                content: ""; position: absolute; left: 50%; right: 50%; bottom: 0; height: 2px;
+                background: linear-gradient(90deg, var(--gold), var(--wine-500), var(--gold));
+                transition: left 0.5s var(--ease), right 0.5s var(--ease);
+            }
+            .field:focus-within::after { left: 0; right: 0; }
             .unlock {
-                width: 100%;
-                font: inherit; font-size: 1.15rem; letter-spacing: .12em; text-transform: uppercase;
+                position: relative; overflow: hidden;
+                width: 100%; max-width: 17rem; -webkit-appearance: none; appearance: none;
+                font-family: var(--caps); font-size: 0.9rem; letter-spacing: 0.4em; padding: 0.95rem 1rem 0.95rem 1.4rem;
                 color: var(--cream);
-                padding: 13px 16px;
                 border: 0; border-radius: 999px; cursor: pointer;
-                background: linear-gradient(115deg, var(--maroon-900), var(--maroon-500) 45%, #a8293f 52%, var(--maroon-700));
-                background-size: 220% 100%;
-                box-shadow: 0 8px 18px rgba(61,8,18,.35);
-                transition: background-position .8s, transform .2s;
+                background:
+                    linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.22) 48%, transparent 60%) -150% 0 / 250% 100% no-repeat,
+                    linear-gradient(160deg, var(--wine-500), var(--wine-700) 45%, var(--wine-900));
+                box-shadow: 0 0.6rem 1.2rem rgba(74, 11, 25, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                transition: background-position 0.9s var(--ease), transform 0.2s, box-shadow 0.3s;
             }
-            .unlock:hover { background-position: 100% 0; }
-            .unlock:active { transform: scale(.98); }
+            .unlock:hover, .unlock:focus-visible { background-position: 120% 0, 0 0; box-shadow: 0 0.8rem 1.6rem rgba(74, 11, 25, 0.45), 0 0 0 3px rgba(202, 162, 75, 0.45); outline: none; }
+            .unlock:active { transform: scale(0.98); }
             .error {
-                min-height: 1.4em; margin: 12px 0 0;
-                font-style: italic; color: var(--maroon-500); font-size: 1.05rem;
-                opacity: 0; transition: opacity .3s;
+                min-height: 1.5em; margin: 0.9rem 0 0;
+                font-style: italic; font-size: 1.05rem; color: var(--wine-500);
+                opacity: 0; transform: translateY(-0.3rem); transition: opacity 0.3s, transform 0.3s;
             }
-            .error.on { opacity: 1; }
-            .shake { animation: shake .5s; }
+            .error.on { opacity: 1; transform: none; }
+            .card.shake { animation: shake 0.55s; }
             @keyframes shake {
-                20%, 60% { transform: translate(calc(-50% - 8px), -62%); }
-                40%, 80% { transform: translate(calc(-50% + 8px), -62%); }
+                20%, 60% { transform: translate(calc(-50% - 0.5rem), -50%); }
+                40%, 80% { transform: translate(calc(-50% + 0.5rem), -50%); }
             }
 
-            /* unlock transition */
-            .bloom {
-                position: fixed; z-index: 10; left: 50%; top: 50%;
-                width: 20px; height: 20px; margin: -10px;
-                border-radius: 50%;
-                background: radial-gradient(circle, var(--maroon-500), var(--maroon-900) 60%, var(--emerald-900));
-                transform: scale(0);
-                pointer-events: none;
+            /* ===== unlock transition ===== */
+            .veil {
+                position: fixed; inset: 0; z-index: 10; pointer-events: none;
+                background:
+                    radial-gradient(circle at 50% 50%, rgba(255, 220, 228, 0.25), transparent 40%),
+                    linear-gradient(118deg, var(--wine-950), var(--wine-700) 30%, var(--wine-900) 50%, var(--wine-500) 68%, var(--wine-950));
+                -webkit-clip-path: circle(0% at 50% 50%);
+                clip-path: circle(0% at 50% 50%);
             }
-            .bloom.go { transition: transform 1.3s cubic-bezier(.7,0,.3,1); transform: scale(220); }
+            .veil.go { transition: -webkit-clip-path 1.3s cubic-bezier(0.55, 0, 0.25, 1), clip-path 1.3s cubic-bezier(0.55, 0, 0.25, 1); -webkit-clip-path: circle(150% at 50% 50%); clip-path: circle(150% at 50% 50%); }
+            .card.unlocking { box-shadow: 0 0 0 0.3rem rgba(202, 162, 75, 0.6), 0 2rem 4rem rgba(0, 0, 0, 0.5); }
+
+            /* ===== short screens (phone landscape) ===== */
+            @media (max-height: 520px) {
+                html { font-size: 14px; }
+                .card { padding: 1.4rem 1.6rem 1.2rem; }
+                .card .monogram { display: none; }
+                .card h1 { font-size: 2.8rem; }
+                .card p { margin-bottom: 0.9rem; }
+                .kicker { margin-bottom: 0.8rem; }
+                .hint { margin-top: 1.6rem; }
+                .envelope { --w: min(60vw, 52vh * 1.5); }
+            }
 
             @media (prefers-reduced-motion: reduce) {
-                .satin, .satin::after, .seal { animation: none; }
-                .petal { display: none; }
+                .satin .folds, .satin .sheen, .envelope, .seal .glow, .loading { animation: none !important; }
+                #petals { display: none; }
             }
         </style>
     </head>
 
     <body class="staticrypt-body">
-        <div class="satin"></div>
+        <!-- shared drawings -->
+        <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+            <defs>
+                <radialGradient id="g-petal" cx="0.5" cy="1" r="1.05">
+                    <stop offset="0" stop-color="#2b0710" />
+                    <stop offset="0.45" stop-color="#6a0d22" />
+                    <stop offset="0.8" stop-color="#9c2238" />
+                    <stop offset="1" stop-color="#c24a60" />
+                </radialGradient>
+                <radialGradient id="g-petal-in" cx="0.5" cy="1" r="1.1">
+                    <stop offset="0" stop-color="#2b0710" />
+                    <stop offset="0.6" stop-color="#7a1026" />
+                    <stop offset="1" stop-color="#b8344c" />
+                </radialGradient>
+                <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#0b3f2f" />
+                    <stop offset="0.5" stop-color="#1f7a5a" />
+                    <stop offset="1" stop-color="#5fb592" />
+                </linearGradient>
+                <radialGradient id="g-wax" cx="0.38" cy="0.32" r="0.75">
+                    <stop offset="0" stop-color="#c13550" />
+                    <stop offset="0.45" stop-color="#8a1530" />
+                    <stop offset="1" stop-color="#3f0715" />
+                </radialGradient>
+                <linearGradient id="g-gold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f1dca6" />
+                    <stop offset="0.5" stop-color="#caa24b" />
+                    <stop offset="1" stop-color="#8f6b25" />
+                </linearGradient>
+
+                <path id="p-petal" d="M0 0 C -24 -6, -30 -38, -6 -46 C -2 -47, 2 -47, 6 -46 C 30 -38, 24 -6, 0 0Z" />
+                <symbol id="rose" viewBox="-50 -50 100 100" overflow="visible">
+                    <g stroke="rgba(255,190,200,.22)" stroke-width=".8">
+                        <use href="#p-petal" fill="url(#g-petal)" transform="rotate(0)" />
+                        <use href="#p-petal" fill="url(#g-petal)" transform="rotate(72)" />
+                        <use href="#p-petal" fill="url(#g-petal)" transform="rotate(144)" />
+                        <use href="#p-petal" fill="url(#g-petal)" transform="rotate(216)" />
+                        <use href="#p-petal" fill="url(#g-petal)" transform="rotate(288)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(36) scale(.74)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(108) scale(.74)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(180) scale(.74)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(252) scale(.74)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(324) scale(.74)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(10) scale(.5)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(100) scale(.5)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(190) scale(.5)" />
+                        <use href="#p-petal" fill="url(#g-petal-in)" transform="rotate(280) scale(.5)" />
+                    </g>
+                    <circle r="9" fill="#3f0715" />
+                    <path d="M-7 2 C -9 -8, 8 -11, 9 -1 C 10 8, -3 10, -4 2 C -5 -4, 4 -5, 4 0 C 4 3, 0 4, -1 1" fill="none" stroke="#b8344c" stroke-width="1.6" stroke-linecap="round" />
+                </symbol>
+                <symbol id="leaf" viewBox="0 -15 50 30" overflow="visible">
+                    <path d="M0 0 C 10 -14, 34 -15, 50 0 C 34 15, 10 14, 0 0Z" fill="url(#g-leaf)" />
+                    <path d="M2 0 C 18 -1, 34 -1, 48 0" stroke="rgba(255,255,255,.28)" stroke-width="1" fill="none" />
+                </symbol>
+                <symbol id="bud" viewBox="-12 -20 24 32" overflow="visible">
+                    <path d="M0 -18 C 9 -12, 10 2, 0 6 C -10 2, -9 -12, 0 -18Z" fill="url(#g-petal-in)" />
+                    <path d="M-7 2 C -10 8, -2 12, 0 6 C 2 12, 10 8, 7 2 C 4 6, -4 6, -7 2Z" fill="#1f7a5a" />
+                </symbol>
+            </defs>
+        </svg>
+
+        <div class="satin"><div class="folds"></div><div class="sheen"></div><div class="weave"></div><div class="vignette"></div></div>
         <div id="petals"></div>
 
-        <svg class="floral tl" viewBox="0 0 200 200" aria-hidden="true">
-            <defs>
-                <radialGradient id="rose" cx="40%" cy="35%">
-                    <stop offset="0" stop-color="#c13a52" />
-                    <stop offset=".6" stop-color="#6e1423" />
-                    <stop offset="1" stop-color="#3d0812" />
-                </radialGradient>
-                <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#2bbf85" />
-                    <stop offset="1" stop-color="#063d2a" />
-                </linearGradient>
-            </defs>
-            <path d="M10 60 C 60 70, 90 90, 120 150" stroke="#d9b779" stroke-width="1.5" fill="none" opacity=".7" />
-            <path d="M60 72 C 50 45, 70 30, 85 42 C 80 60, 70 70, 60 72Z" fill="url(#leaf)" />
-            <path d="M95 105 C 120 90, 140 100, 138 118 C 120 120, 105 115, 95 105Z" fill="url(#leaf)" />
-            <path d="M30 64 C 25 40, 40 25, 52 36 C 48 52, 40 60, 30 64Z" fill="url(#leaf)" />
-            <g transform="translate(58 50)">
-                <circle r="26" fill="url(#rose)" />
-                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
-                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
-                <path d="M-6 -2 C 0 -10, 8 -6, 6 2 C 2 -2, -2 -2, -6 -2Z" fill="#e05a72" opacity=".5" />
+        <svg class="bouquet tl" viewBox="0 0 300 300" aria-hidden="true">
+            <g fill="none" stroke="#caa24b" stroke-width="1.2" opacity=".55">
+                <path d="M0 40 C 80 50, 150 90, 210 200" />
+                <path d="M40 0 C 60 70, 90 130, 120 170" />
             </g>
-            <g transform="translate(118 150) scale(.7)">
-                <circle r="26" fill="url(#rose)" />
-                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
-                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
+            <use href="#leaf" x="70" y="40" width="70" height="42" transform="rotate(25 105 61)" />
+            <use href="#leaf" x="20" y="100" width="64" height="38" transform="rotate(-50 52 119)" />
+            <use href="#leaf" x="150" y="120" width="60" height="36" transform="rotate(55 180 138)" />
+            <use href="#leaf" x="110" y="150" width="56" height="34" transform="rotate(110 138 167)" />
+            <use href="#rose" x="-10" y="-10" width="120" height="120" />
+            <use href="#rose" x="95" y="75" width="78" height="78" transform="rotate(30 134 114)" />
+            <use href="#rose" x="20" y="120" width="62" height="62" transform="rotate(-20 51 151)" />
+            <use href="#bud" x="190" y="165" width="26" height="34" transform="rotate(140 203 182)" />
+            <use href="#bud" x="150" y="20" width="22" height="30" transform="rotate(70 161 35)" />
+            <g fill="#f7ecdc" opacity=".9">
+                <circle cx="178" cy="78" r="3.4" /><circle cx="186" cy="72" r="2.4" /><circle cx="184" cy="84" r="2" />
+                <circle cx="96" cy="196" r="3" /><circle cx="104" cy="204" r="2.2" />
+                <circle cx="222" cy="118" r="2.6" />
             </g>
-            <g fill="#f7efe4" opacity=".85">
-                <circle cx="100" cy="80" r="4" /><circle cx="106" cy="76" r="3" /><circle cx="22" cy="100" r="3.5" />
-            </g>
+            <g fill="url(#g-gold)"><circle cx="60" cy="215" r="2.2" /><circle cx="236" cy="56" r="2" /></g>
         </svg>
-        <svg class="floral br" viewBox="0 0 200 200" aria-hidden="true">
-            <path d="M10 60 C 60 70, 90 90, 120 150" stroke="#d9b779" stroke-width="1.5" fill="none" opacity=".7" />
-            <path d="M60 72 C 50 45, 70 30, 85 42 C 80 60, 70 70, 60 72Z" fill="url(#leaf)" />
-            <path d="M95 105 C 120 90, 140 100, 138 118 C 120 120, 105 115, 95 105Z" fill="url(#leaf)" />
-            <g transform="translate(58 50)">
-                <circle r="26" fill="url(#rose)" />
-                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
-                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
-            </g>
-            <g fill="#f7efe4" opacity=".85"><circle cx="100" cy="80" r="4" /><circle cx="106" cy="76" r="3" /></g>
+        <svg class="bouquet br" viewBox="0 0 300 300" aria-hidden="true">
+            <g fill="none" stroke="#caa24b" stroke-width="1.2" opacity=".55"><path d="M0 40 C 80 50, 150 90, 210 200" /></g>
+            <use href="#leaf" x="70" y="40" width="70" height="42" transform="rotate(25 105 61)" />
+            <use href="#leaf" x="20" y="100" width="64" height="38" transform="rotate(-50 52 119)" />
+            <use href="#leaf" x="130" y="130" width="56" height="34" transform="rotate(60 158 147)" />
+            <use href="#rose" x="-10" y="-10" width="115" height="115" transform="rotate(20 47 47)" />
+            <use href="#rose" x="92" y="80" width="64" height="64" />
+            <use href="#bud" x="40" y="130" width="24" height="32" transform="rotate(-160 52 146)" />
+            <g fill="#f7ecdc" opacity=".9"><circle cx="170" cy="70" r="3" /><circle cx="178" cy="64" r="2.2" /><circle cx="196" cy="160" r="2.6" /></g>
         </svg>
 
         <div id="staticrypt_loading" class="stage">
-            <div class="loading">a moment…</div>
+            <div class="loading">MEHARA</div>
         </div>
 
-        <div id="staticrypt_content" class="stage hidden">
-            <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+        <main id="staticrypt_content" class="stage hidden">
+            <div class="kicker">For Mehara</div>
+            <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Break the seal to open your letter">
                 <div class="env-back"></div>
-                <div class="letter"></div>
                 <div class="env-front"></div>
-                <div class="env-flap"></div>
+                <div class="env-flap">
+                    <div class="env-face out"></div>
+                    <div class="env-face in"></div>
+                </div>
                 <div class="seal">
-                    <svg viewBox="0 0 40 40" aria-hidden="true">
-                        <g fill="none" stroke="#e8b5a0" stroke-width="1.6" stroke-linecap="round" opacity=".85">
-                            <circle cx="20" cy="20" r="16" stroke-width="1" opacity=".6" />
-                            <path d="M20 12 C 16 12, 14 16, 17 18 C 13 19, 14 24, 18 23 C 18 27, 22 27, 22 23 C 26 24, 27 19, 23 18 C 26 16, 24 12, 20 12Z" />
-                            <circle cx="20" cy="19" r="2" />
+                    <span class="glow"></span>
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                        <path d="M50 3 C 61 2, 69 8, 77 12 C 88 18, 96 28, 97 41 C 99 53, 95 63, 91 71 C 85 84, 73 95, 58 97 C 46 99, 33 96, 23 89 C 12 81, 4 69, 3 55 C 2 42, 5 30, 13 20 C 22 9, 37 4, 50 3Z" fill="url(#g-wax)" />
+                        <circle cx="50" cy="50" r="33" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="3" />
+                        <circle cx="50" cy="50" r="33" fill="none" stroke="rgba(255,170,185,.22)" stroke-width="1" transform="translate(-.8 -.8)" />
+                        <g font-family="Pinyon Script, Snell Roundhand, cursive" font-size="44" text-anchor="middle">
+                            <text x="50" y="65" fill="rgba(0,0,0,.35)" dx="1" dy="1.2">M</text>
+                            <text x="50" y="65" fill="url(#g-gold)">M</text>
                         </g>
+                        <ellipse cx="36" cy="26" rx="12" ry="5" fill="rgba(255,255,255,.18)" transform="rotate(-30 36 26)" />
                     </svg>
                 </div>
-                <div class="hint">tap the seal</div>
             </div>
+            <div class="hint">break the seal</div>
 
-            <div class="card" id="card">
-                <h1>Mehara</h1>
-                <svg class="divider" viewBox="0 0 120 12" aria-hidden="true">
-                    <path d="M0 6 H48 M72 6 H120" stroke="#d9b779" stroke-width="1" />
-                    <path d="M60 1 C 56 1, 54 5, 57 6 C 54 7, 56 11, 60 11 C 64 11, 66 7, 63 6 C 66 5, 64 1, 60 1Z" fill="#6e1423" />
+            <div class="card" id="card" role="dialog" aria-labelledby="card-title">
+                <svg class="monogram" viewBox="-50 -50 100 100" aria-hidden="true"><use href="#rose" x="-50" y="-50" width="100" height="100" /></svg>
+                <h1 id="card-title">Mehara</h1>
+                <svg class="flourish" viewBox="0 0 180 20" aria-hidden="true">
+                    <path d="M4 10 H62 M118 10 H176" stroke="#caa24b" stroke-width="1" />
+                    <path d="M62 10 C 72 2, 80 2, 84 10 C 80 18, 72 18, 62 10Z M118 10 C 108 2, 100 2, 96 10 C 100 18, 108 18, 118 10Z" fill="none" stroke="#caa24b" stroke-width="1" />
+                    <circle cx="90" cy="10" r="3.2" fill="#7a1026" />
                 </svg>
                 <p>A letter, sealed just for you.</p>
                 <form id="staticrypt-form" action="#" method="post" autocomplete="off">
                     <div class="field">
+                        <label for="staticrypt-password">SECRET WORD</label>
                         <input
                             id="staticrypt-password"
                             type="password"
                             name="password"
-                            placeholder="the secret word"
+                            placeholder="whisper it here"
                             autocomplete="off"
                             autocapitalize="off"
+                            autocorrect="off"
                             spellcheck="false"
+                            enterkeyhint="go"
                         />
                     </div>
-                    <input type="submit" class="unlock" value="Open" />
-                    <div class="error" id="error" aria-live="polite">Not quite, try again</div>
+                    <button type="submit" class="unlock">Open</button>
+                    <div class="error" id="error" role="status" aria-live="polite">Not quite, my love — try again</div>
                 </form>
             </div>
-        </div>
+        </main>
 
-        <div class="bloom" id="bloom"></div>
+        <div class="veil" id="veil"></div>
 
         <script>
             // filled in by StatiCrypt at build time
-            const staticryptInitiator = ((function(){
+            var staticryptInitiator = ((function(){
   const exports = {};
   const cryptoEngine = ((function(){
   const exports = {};
@@ -924,96 +1076,110 @@ exports.init = init;
 
   return exports;
 })());
-            const isRememberEnabled = false,
-                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"d472b1024d9bd5576cb8d2ef9ff350ba8672aa91a30ed4bf0a805266632885dbe0ce50ec42b9cf9c69ebc9a0bfed0552a18c9131d55fda875b88f04bff94b045f22bea48e0e391b458c86db4e327c4ff7026f9de666fab30864f8d78de926e5b0388a2b4ec14dad87cb037d26f0b2d0f032cd0bc62fd6dd6ae258621cadfa8a99547e171a8b052246e21aa9b1a7dd96ef10af2a64588a2eec2709435807e357e56248b5ad6896dabd3de463c2432ab4efb53b88862203c77fca58605791f2733374f314c1623e160a264704aea1013821698519fb9cc14cbda096d8fa5e94e069c6f381e6a12fa862a4acfb7cec03fa735370c0462d3e808df32cded725a6eefb4bcaf36805d03c55d3a5ebe59fbff6980569c00c4a394e34df608d526f1121f81ddbfbf6edfda81487f422cc6eaf3ec7f7987485858d3922619187d31902545b33c72088d8a822239fef2f0168cff728d69a403f2b0dc0b56cf4653a62bb2b5fd452c83b722eb6e296425d965ab7af45a23f009ae5306477e116d4fea3c90ebbf1fd5493dcb2516eabe3ff6ae4c7221b389d2d09a3afdc3525bf93a4e7c44e43b51a747a8f3526defa58ab5206a1cdd6754ca2d3bf0d38d6dd396e8a60eb86553e8abfeb42a7d6ac7fde77c25101425e99dc0e277d16612d278029e2d7062d6e53432360d53cf01a8a6b3486675439e0d54fc57994dddd7b0ff6efddc4e74c5f9da56e6e3a9f7e0c9d0252d8712241de6f077c1e639f7b147dd9ac2a60c65519c343a33166a34764dc0f80324872f7f9ad8e07bfac1d6f83e18dc30fd8f4f5beb5d9655cdd2b4a47c8c77c8fad99ba5f3e026e1acde8991b04d756e82effcf7e8a6b4b6c4fb6b4210126e0dddba9f40152175d8ce5efb4f8c6d66cac6fdc31e66e21d9d7b1e6c6d53f2660c03a6d7e37f3f6c16f8dcb4cb348b5885285ad6e1362c80e64e7049eba2e8f031f0813721918277ed1aaef87711f325e3319b7b7219446bc2c3e33c1ddd0c2922a059cdb43f3ce948052012abf69a57a95d1b46a106f692825337d41b828c7c4afe2c0df17cc4b56499286ca22cba754a1303b260f249b4fb72e45efef8df9a7a2ede1564e257b6277cd434e9680b09c14d9ed78fed1f6e646f70be3b344eff15255e92a253282d6782d44c6716a28dc83483c373f7771d826ef59351bdd470b8ddbc644a9b3aedc7d624d863954cf33287adf42d4a19948dfc64c8fd299955a509f8b40f5895cdb3ae1a9b3672f5a5370c48a37ee811f1c0a15fd209d509e7d67d1d624149c8ea979f920b4a5d59ed84111a4f575bf3b1feed8a5f2d33740fa7f4ee53e403ede4d3477204ff180e286150e588597b8623878bfcec459244cbf0823579bc53dcd4bc6f9cc0df8f3307e8df59727bf97fad5f9b97c5a0bdcecbe4d597c3f1ed8fa3f7a038a444c00009ae9d8722b6df2fbc0ce4f9cd3b2c9778f2204fd6e91106fc1f6a59133c4c2e84a4fdf05f72cc2f9a71539552ca5f2711c0e27895142cafd5412e3581463a956f149b6149814a5c16dbd2e6caa0173760ea738e50b5798715aaf286ad14e553267a3c1bb65052188856701192d717ddfff4edef4151bded7b2de61d0032234a903030b066f3156eaf66cbe87b11ee87ce8c536cf162db22946b03822cfd422af98ec8fda0d67511124194b3c21f7bd715813f1338cb5cf543fe5f076ecfee5658b1c8130e21b1a892b135fae01b0786c4ee4a9db883513ca9d1c0485e70e34d520d9a65ee0eadc735eade62c5aa1331492a1e9411417bd3f4b95aed792e9ad801fbe4f4c6cbdffae202d269cccd972ec29b4ea372161827cf56dd321efcf130ec3fd2f1b2e584ff47ae8efd8dc7423938e8ace3c2d046fc31f1f224633134b76ea0ff24b6337be829e611b1f784f3d78e8fc96037a1782828eb6e58733e3be76d3061bc3ee4312e17913c72aa2e8c1625971ba1d7a5f6c723a581e7b47aae5658fc282a8ada4b1d31c2d012798245586fae52566c02bf14313c8c35945d447b4343d5d486a9582f358d020ff50a21526163c2722a0c87291074b19d05077f23c9506d2fd5e5e89282ee50445c38ce9978e7a76a0c4ea3b3779202beb3a0dc67e235a691790874c9bf6dd5d598c90c00e421931635f1a46684d61fcddc3dd4cb12de71849e2374f3468839e688e8f3048ea8a864aee5662ff727e455016442d6962f7164ca747e675f8e420db9c81fd3faef52b1ee50aa96b290fbf3609fe03276216952f19b8b01c596a3ab75def340fe390bbcf373ef1c76c5883db781e8ebe2e3d2a58e79f31a5c15b0c2bfd50272e31a67995a928f9279c9d964156670759f274fb70c14a0d19c441c18739b5b7bf9aa6d2e98da1acdbe47b1a1fab2e9513360734b3e5fdbb39e0531a884c8677dc2e5aaab1ad3d1ea8b0ac5e5cf495e2b0f567738a206ccc3cc6f7066cc1fbea4747ebb97d76ba50b1b3f570e72a66b876e4816878264a82cd3fb3f98ec915871ece1c1f85171ec8c894c69d9e27d8d58427a05a945fa4cd7edf04be37cb601751ed1d1a1fc48fa4d070e94b62b0aadf68c643b71f3ca813d21d45d4540898267cc325a4f7dd1eca71dae2d7a24ccb462a766c1d97d8a583494856b231f3de797380794d4c1136da103946489c046f085f9aa7924d294377cec7b89472560cfd1160df172ad2d3eaef1880a2be81265036c8f3bada3d8790adc194619c7b0f8def767d4837cab2b800e50af543d840370518d920266c4456dac31772ab091fe1f8a1f2ebfef1d3842db1c4c1cc8375ee6f2dd269f1269a4c468069b6058e6313969b28f7e71ea7a60f2301aef563e22641f00be6c072db1c76a85c4e465ab39722678add999d42cc7beb5bbfd411704e31db01dad0be8cf6afe252eae8d3943d06a21c6013de8e839d6ca00898241fdb68998ef1439b5a34ce73f03addce8ccb77dd622d3a19f2241ecd4a306e53000f74ee33ed3dd287a6270092433e30ea455a42d90f5467f30b483599d5f9df2bfdde0b1a4c5c0fce7d7356b2c11ffdc94b6ed4b2bc5cfbd757fe1e7a6ec06e365d9495fca80336a008abbca984f25c8c65af620066bc3dac533ecf5c00048131fa2dcdcfe1751853a3ae4e382f940d8db84aa837d803b98e3f60b240dc104bff4477e12b52c091b2c1857a823e4b1b6ccc985d7e1a50050bf164b424d4cbcbf1b0f5d6ffd5432e5e997f54ea94253fc3d93b8c08ed49db2fa56ddfcb62c54409996497ba92ab119ab3a37487170107908c848d0e5edc5c9f899c90a7ff8376dbb01299c791b2d29c89837b080a2b26d95729abf2032b07ef0f57036b010063deb099842b8ab1176a192deb47a027521e45d15b3c81422e6caf2da1a610c470470f6dfa8aa84b71b268bd6b4d3e46b306ded1e9d77c29493d3b2733a1db51753e3c71b9d95c641e2df2ff751a9b0c49db082f52e61396a3aec392c3a2cfb9373986db27bb9ec7b2bd4da413fe2ef016691bc01b09a0da461c0f81431d527f619e994b9b07925330bd7680e19dbe986cace491fa7b3ff491a81d20eac242ca0f52512701db4c5f0c9a32e7e8eb68687eb5dca8a196c1429c7743f29d1e55cd8fb35b99dea19c7f6769c4e4984486dffa0cd871478501fa6d32a98964871d3b0c80bc34c087c8c00d9dd218d0ff11a4bcb073cc7bff1e501ab21779790f4cc2547398d50e5d4b9b627ba12289b4de58824b11fd1ecba2f9b7d4eb7b95f2654a422b85fd238d9f363d92555425999f8180dc5eeb8aa35922cd7","isRememberEnabled":false,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"93bb1ecaa5809486b2054ec46c6aa569"};
+            var isRememberEnabled = false,
+                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"0546d07cc908a6522f66b3406f341a742ecb285bc4f65e22d606246d7b30e532aad981b0404f30aeac19d11413bf719d0aa76702b2796c3f02536598c065c17f78a63ba8aa66a6246cbb4f6e3ae108d0ddb49367cb977f2ed9274bff39294e3de7f0270296223964f1e942a151062b52dd95165fcdf7543097050b10a8574eeb023a0bb0b70b82c62d912699f6b1b4283d1c7e26a32a416527ae36c73bcc5d6eb0a7e430aebac6556c90e2fbb407dc60ddd1cfba581cba4154c1215ca9b2eb8ff28ba82d6b8561b9da19a0f38dda08463f8667692660e71e8ea5eca0ddd1a8c418e735041449023fb79ce2a2612ad39d347ba2082d3eb746272c26c0c706a3bf01a6a96705615a21d3abfac2346fa3d3b1748320d2f42d17aafbfaee3b64684635ece171442c63f199005fe7c1574f9a88d269f5206f505c0862535dbe7cb418f213e68fa748430087f0e38404efc38c1f400cfffcea9db3f37fed0cec20971182042aa5a2e70f32c25fc4ae06b15c7753b42ba27ad373c4aa8a7b1c2dc681ae51c70837e62a03a53a73c2b7d9b38ec48aaf8ac48d29ba739d2c2d82e64780cd5debcbfe475da0889780e4558a185da42162889e25b424ce51a278ba93b2f7c33f5d95a6ee46f8f61a6ba70067a2c4c0920a332531461020f82009b87d9c3b98e197ef6e26d6e3343f1325d0a2cf46063df1e7b191fa69796ed74e4f4093f5e518b5ccbb7ad0fefb82243db5a8da8f134642ad826760992b24b1f57303b512e3aaaef5a6baa4596b3d641d1936af2032e64dd31643fb1ce45283f3ef1e940c4e520547152d3b0aef6cd5f63ad3edd3fb6065d0cc8ab6ef76d16a868ffbda1a9a0f34eb0f537624c841b9fdcef16c33f0d1dbbc1137ba0bfd88072dee11d45100271e675b559d1f36ea4ecd963992fc0f811101961f194797098312b39443e8786f53ba0761a2787cc66e3957c13f9e8225b864522e63c187b5955d9862f041deb7a8262cef91596387a88714c1cdc74cdefd18480c56fcc0144ef2d3760401ec5163ccb016c22dc712dc253fa253c25945e6a7a56176bd3516a29246f715be44ec35f2654dc9f8dd1665ac132c19762427b180e660f3ce4508c3678d8b70653328091c99927dc5edeb3161227bf27da5f36fae1b51d8c745b7d0236d3bb307bf405049b94de84da45ce11295f5c5457cae2febf74d94a2483e7bfce220915082b63ce68d1985c477badffaabf2aa99cd7c0109a8802ddebfa0bd080874c18287fee27849cdb8fb19f8ef5f4385e010b99821cc9465d3f32fa06831238c4c39fc8b7204c3a2bee313a2083767b4ab61f777a27d9d5858c9754e20f0fe83508a3232ea375c3e7a4f823e48720d3a47f4d3cf1f660fffcee6b75a257e5574a74483ab0e8bb8f06545075363387f3bdc8da2a37805a48dd200bb481a0b05017d2a2032695b3d3f0165040e37d84cb92120514c2610f917b57e1414bfdefb3bb5e5a114540d9a594efc84762e8e9198df8579d0178c3fcb7816f3781a207c0f9fd440e9a205f49f94260732e891df76edd204e54a01b0afa304c7efaccfb11c8830a75ce3f42cfaec143dfc6d60c4bef40749dbe104a91d0f298a73d3c9f63e501372ebbd7b5de7581317d44008ee4e4eb03278eb5f1740617352d32e5c7a8a93980f3bd1fa077b8f1cc497d00f4903e7125156b3a8cd2b18334d90f0947ea2f46ea44ed1f7ad52b906f4d1b5149447a04e4b0979bd30e45917885d37bc21d60f98910701e59e8d167e5b36d6f7e5f2b070d39df0de938b3d9c22c7f5bc644cbd107c3c651da409ce4266581d4da925e75882843bc64b534885c5b9512d0350871701eedfbc9800c37dddff3a45d4bbea29fa221b02100c078d343d061581d9f5df371a310a413a3b87ec98bc88a2515ccc3189bab0ed75aeb3a7976232417e67bb1e39c77441ad7de85bf16cc17622a7f0f4d21e05016eafa3d47244bc498864edfbb1a3b69b338e60d223e616cb87fcbcce4a224974c8db4af4fc590abfe0cbc604f7ba57a0afaca15b92378ffdaf48cee78d4753d371872fb892d7910b2d342c42b9422e412ab759af6275a26de3a059c5dc18a4b8d9b69f2f272ff43ade46344ea094382f8265f8f1b6d1505cc3c1c67e872ea1047bc2264af689275d4e297df5c589f1938f6f25dfd9114ad7b6f358c496699b56e2a0714fecb8adcf0ee38f3f74eb1d23beb3c7d089d379171744e6fe5481b1d368564698245613b398e1be2199f972dcfaf3c10a6978ad80aa4b3511a7066a89414c14e4c17661b0234e9a74497ba8f3296ed0db5f9d9e3c51871e9bda0fd4279d5bf042f128bb7c51b4dd654358a7c185812f81d6099ad38a525f80d686aece010fcd3694462f198c4fd8149efe54c1c8a45442b2cb2652d7a261c564a28bacc1f4bc5f7c09d6936c7cbbb8c1cdfac0f0226cc6b40ac3547d9319f4a36c2c343dff22ef1e09fd0c1446db87dc106cd1eac9e87ed1f730fb307c4cfd700357768f59879bf16a446f1748dbd649f95d18eb662a151cdda77041aa1444ee037053e3cd07a6d85314873f5f268e5d5f4907ea561ea859fe07437ae6a22c64681a94bfa15454ce760f9c00a61a0e7ea5969db32219a17672cc349643f6dfe6b2d05fccb9ea6bd7eda12966b765c3241597c7334d02c331b9e3c18336f588da0a8ed4dd2af429c0f175645536fa71a9c2b24073eaa2c33d3016bd9113513395926ad43ae86b0bd4713ee00771dc90af5f35ea27cf02e2b6e3e0f0600b23bdc813377bcf4e41d3fbef054280ed280239e5a9ad4ee8a4cd2af0170f2f8a4a73315e75f95955b04f0ddc8f16e5c03b5996c6b6224921b159ff09818d30fbc0ac60045de2a3a6efe46b90113c1ebab1839e14ec31e00bf89fbfe46e0c44ed824aa184a7d0fb82c2f099d6a9266ff7cfc3c7f83922d332aeed4f42f24e42d8baa9dc4334325843b33104fc2445dc3a0e00fe880beb034e61758b88b78ef4c16317897d57ac087e116b6015915eaccee29a3ef44670b323fc6814b22090780248c83bcb1846ce7d9be69c1c882abf9fe82dc183f389d76fed8be85ff634a463a2045673640a0abbc9778fe0fab642fec374d9f91104dd1e441fd7c0fbfac3a827062330e0fe635a4f99a313b9dd5d33e34201fd0d1ceccdd0292146b51c50fffe5dc9f51495255df44637e62a2cedb676754aad9d5585d7ac26a2e2c748226cc8d22b86b58c35f4985e0c0598e100a4698921e6be174dfd286f63919b4a8790156f5251499b592d4c156bacb49c66bc28a278a432dbc674af85d104ac3f9211593214eeca054332781f7fe84904f0f941e80de428369e9749d298261320199c32079b61fca6b86b84e776679052929f7b4be810fbca5d1aac0df2ca244d6542381e0ca271394f95d557ba9fc57db6e632f04e8fd02cba041f74328e3737d1dcb8f8abcb94e7b1b03d9e623cea7226d6269ac20aa806e16035c7d60f8559a3830b1ad2dd2bf5c2e3a23aaf81ab736a94b5e2f74c1f23d94779f53a97c5427f4db4fcaf683bfef064b6cec3c5c9e806feb02d21bf4deaa13430700bbbf9e18c06d26093cb341eaba9e35c759f6e239a2466bb1a1dba08b30c8ed89dcc842005111c12eb4c8608dd194583836cb975db44f27b72d7fd3b1f472fa3b896276639c9b80a08a3dcaa61bf8f825fe3e132dfc1428b39db1c2617e121e1bffba0f09a55f233fbc0da981f548c0750d7b6f7eb8052052e12d4a2f421380c03589e3476af233bd9ea36bb89ed2e6b7780a9bb6a0f01cdd68eb8592f6ed530cc836a7a7f39875a37114cc27c1ce55263cde21de4f121ef4ab4aa49ae01ae8c5f31991fd360c507","isRememberEnabled":false,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"93bb1ecaa5809486b2054ec46c6aa569"};
 
-            // never keep her (or anyone) signed in: wipe any saved password from older builds
+            // never keep anyone signed in: wipe any password saved by older builds
             try {
                 localStorage.removeItem("staticrypt_passphrase");
                 localStorage.removeItem("staticrypt_expiration");
             } catch (e) {}
 
-            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-            // play the bloom, then swap in the decrypted page
-            const templateConfig = {
+            var templateConfig = {
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
+                // play the reveal, then swap in the decrypted page
                 replaceHtmlCallback: function (plainHTML) {
-                    const swap = () => {
+                    function swap() {
                         document.open();
                         document.write(plainHTML);
                         document.close();
-                    };
+                    }
                     if (reduceMotion) return swap();
-                    burst(70);
-                    document.getElementById("bloom").classList.add("go");
-                    setTimeout(swap, 1350);
+                    document.getElementById("card").classList.add("unlocking");
+                    burst(60);
+                    setTimeout(function () { document.getElementById("veil").classList.add("go"); }, 200);
+                    setTimeout(swap, 1550);
                 },
                 clearLocalStorageCallback: null,
             };
 
-            const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
+            var staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
 
             // ---------- petals ----------
-            const petals = document.getElementById("petals");
-            function petal(fromTop) {
-                const el = document.createElement("div");
-                el.className = "petal" + (Math.random() < 0.25 ? " leaf" : "");
-                const size = 10 + Math.random() * 14;
-                el.style.width = size + "px";
-                el.style.height = size * 0.78 + "px";
+            var petals = document.getElementById("petals");
+            var area = window.innerWidth * window.innerHeight;
+            var ambientMs = Math.max(380, Math.min(900, 520000000 / area)); // more petals on bigger screens
+            var petalSvg = function (leaf) {
+                return leaf
+                    ? '<svg viewBox="0 -15 50 30"><use href="#leaf"/></svg>'
+                    : '<svg viewBox="-12 -16 24 20"><path d="M0 -15 C 10 -12, 12 0, 0 3 C -12 0, -10 -12, 0 -15Z" fill="url(#g-petal-in)"/></svg>';
+            };
+            function petal(fromMiddle) {
+                var el = document.createElement("div");
+                var leaf = Math.random() < 0.2;
+                var size = (leaf ? 1.1 : 0.9) + Math.random() * 0.9; // rem
+                el.className = "petal";
+                el.style.width = size + "rem";
+                el.style.height = size * (leaf ? 0.6 : 0.85) + "rem";
                 el.style.left = Math.random() * 100 + "vw";
-                if (fromTop === false) el.style.top = 40 + Math.random() * 20 + "vh";
-                el.style.setProperty("--dx", (Math.random() * 40 - 20) + "vw");
-                el.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
-                el.style.animationDuration = 7 + Math.random() * 8 + "s";
+                if (fromMiddle) el.style.top = 35 + Math.random() * 25 + "vh";
+                el.style.setProperty("--dx", Math.random() * 30 - 15 + "vw");
+                el.style.setProperty("--rot", Math.random() * 540 - 270 + "deg");
+                el.style.animationDuration = (fromMiddle ? 4 : 9) + Math.random() * 7 + "s";
+                el.innerHTML = petalSvg(leaf);
                 petals.appendChild(el);
-                el.addEventListener("animationend", () => el.remove());
+                el.addEventListener("animationend", function (e) { if (e.target === el) el.remove(); });
             }
-            function burst(n) { for (let i = 0; i < n; i++) setTimeout(() => petal(false), i * 12); }
+            function burst(n) { for (var i = 0; i < n; i++) setTimeout(function () { petal(true); }, i * 14); }
             if (!reduceMotion) {
-                for (let i = 0; i < 10; i++) setTimeout(petal, i * 400);
-                setInterval(petal, 700);
+                for (var i = 0; i < 8; i++) setTimeout(petal, i * 450);
+                setInterval(function () { if (!document.hidden) petal(false); }, ambientMs);
             }
 
             // ---------- envelope -> card ----------
-            const envelope = document.getElementById("envelope"),
+            var content = document.getElementById("staticrypt_content"),
+                envelope = document.getElementById("envelope"),
                 card = document.getElementById("card"),
                 input = document.getElementById("staticrypt-password"),
                 error = document.getElementById("error");
             function openEnvelope() {
-                if (envelope.classList.contains("open")) return;
-                envelope.classList.add("open");
-                card.classList.add("show");
-                if (!reduceMotion) burst(24);
-                setTimeout(() => input.focus(), 1500);
+                if (content.classList.contains("opened")) return;
+                content.classList.add("opened");
+                envelope.setAttribute("aria-expanded", "true");
+                if (!reduceMotion) burst(22);
+                setTimeout(function () { input.focus({ preventScroll: true }); }, reduceMotion ? 50 : 1300);
             }
             envelope.addEventListener("click", openEnvelope);
-            envelope.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEnvelope(); }
+            envelope.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " " || e.keyCode === 13) { e.preventDefault(); openEnvelope(); }
             });
 
-            window.onload = async function () {
-                const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
-                if (!isSuccessful) {
-                    document.getElementById("staticrypt_loading").classList.add("hidden");
-                    document.getElementById("staticrypt_content").classList.remove("hidden");
-                }
-            };
+            window.addEventListener("load", function () {
+                staticrypt.handleDecryptOnLoad().then(function (r) {
+                    if (!r.isSuccessful) {
+                        document.getElementById("staticrypt_loading").classList.add("hidden");
+                        content.classList.remove("hidden");
+                        envelope.focus({ preventScroll: true }); // TV remotes / keyboards: Enter opens straight away
+                    }
+                });
+            });
 
             // ---------- submit ----------
-            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
+            document.getElementById("staticrypt-form").addEventListener("submit", function (e) {
                 e.preventDefault();
                 error.classList.remove("on");
-                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(input.value, false);
-                if (!isSuccessful) {
-                    error.classList.add("on");
-                    card.classList.remove("shake");
-                    void card.offsetWidth;
-                    card.classList.add("shake");
-                    input.select();
-                }
+                staticrypt.handleDecryptionOfPage(input.value, false).then(function (r) {
+                    if (!r.isSuccessful) {
+                        error.classList.add("on");
+                        card.classList.remove("shake");
+                        void card.offsetWidth;
+                        card.classList.add("shake");
+                        input.select();
+                    }
+                });
             });
         </script>
     </body>
