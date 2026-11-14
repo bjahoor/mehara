@@ -1,225 +1,333 @@
-<!DOCTYPE html>
-<html class="staticrypt-html">
+<!doctype html>
+<html class="staticrypt-html" lang="en">
     <head>
         <meta charset="utf-8" />
         <title>Mehara</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <!-- do not cache this page -->
         <meta http-equiv="cache-control" content="max-age=0" />
         <meta http-equiv="cache-control" content="no-cache" />
         <meta http-equiv="expires" content="0" />
-        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
         <meta http-equiv="pragma" content="no-cache" />
-
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap"
+            rel="stylesheet"
+        />
         <style>
-            .staticrypt-hr {
-                margin-top: 20px;
-                margin-bottom: 20px;
-                border: 0;
-                border-top: 1px solid #eee;
+            :root {
+                --emerald-900: #04261a;
+                --emerald-800: #063d2a;
+                --emerald-700: #0a5c3f;
+                --emerald-500: #169c6a;
+                --maroon-900: #3d0812;
+                --maroon-700: #6e1423;
+                --maroon-500: #8f1d30;
+                --cream: #f7efe4;
+                --gold: #d9b779;
             }
-
-            .staticrypt-page {
-                width: 360px;
-                padding: 8% 0 0;
-                margin: auto;
-                box-sizing: border-box;
-            }
-
-            .staticrypt-form {
-                position: relative;
-                z-index: 1;
-                background: #ffffff;
-                max-width: 360px;
-                margin: 0 auto 100px;
-                padding: 45px;
-                text-align: center;
-                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-            }
-
-            .staticrypt-form input[type="password"],
-            input[type="text"] {
-                background: inherit;
-                border: 0;
-                box-sizing: border-box; /* This ensures padding is included in the total width */
-                font-size: 14px;
-                outline: 0;
-                padding: 15px 30px 15px 15px; /* Adjust the padding to ensure there is space for the icon */
-                width: 100%;
-            }
-
-            .staticrypt-password-container {
-                position: relative;
-                outline: 0;
-                background: #f2f2f2;
-                width: 100%;
-                border: 0;
-                margin: 0 0 15px;
-                box-sizing: border-box;
-            }
-
-            .staticrypt-toggle-password-visibility {
-                cursor: pointer;
-                height: 20px;
-                opacity: 60%;
-                padding: 13px;
-                position: absolute;
-                right: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 20px;
-            }
-
-            .staticrypt-form .staticrypt-decrypt-button {
-                text-transform: uppercase;
-                outline: 0;
-                background: #4CAF50;
-                width: 100%;
-                border: 0;
-                padding: 15px;
-                color: #ffffff;
-                font-size: 14px;
-                cursor: pointer;
-            }
-
-            .staticrypt-form .staticrypt-decrypt-button:hover,
-            .staticrypt-form .staticrypt-decrypt-button:active,
-            .staticrypt-form .staticrypt-decrypt-button:focus {
-                background: #4CAF50;
-                filter: brightness(92%);
-            }
-
-            .staticrypt-html {
-                height: 100%;
-            }
-
-            .staticrypt-body {
-                height: 100%;
-                margin: 0;
-            }
-
-            .staticrypt-content {
-                height: 100%;
-                margin-bottom: 1em;
-                background: #76B852;
-                font-family: "Arial", sans-serif;
+            * { box-sizing: border-box; }
+            html, body { height: 100%; margin: 0; }
+            body {
+                overflow: hidden;
+                background: var(--emerald-900);
+                color: var(--cream);
+                font-family: "Cormorant Garamond", Georgia, serif;
                 -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
+            }
+            .hidden { display: none !important; }
+
+            /* ---------- satin backdrop ---------- */
+            .satin {
+                position: fixed; inset: -20%;
+                background:
+                    radial-gradient(120% 80% at 20% 10%, rgba(255,255,255,.10), transparent 55%),
+                    linear-gradient(115deg,
+                        var(--emerald-900) 0%, var(--emerald-700) 18%, var(--emerald-800) 30%,
+                        #0d6e4b 42%, var(--emerald-900) 55%, var(--emerald-700) 70%,
+                        var(--emerald-800) 84%, var(--emerald-900) 100%);
+                background-size: 100% 100%, 300% 300%;
+                animation: drape 18s ease-in-out infinite alternate;
+            }
+            .satin::after { /* moving sheen */
+                content: ""; position: absolute; inset: 0;
+                background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.13) 48%, rgba(255,255,255,.04) 52%, transparent 65%);
+                background-size: 250% 100%;
+                animation: sheen 9s ease-in-out infinite;
+                mix-blend-mode: screen;
+            }
+            @keyframes drape { from { background-position: 0 0, 0% 50%; } to { background-position: 0 0, 100% 50%; } }
+            @keyframes sheen { 0% { background-position: 150% 0; } 60%, 100% { background-position: -100% 0; } }
+
+            /* ---------- petals ---------- */
+            #petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+            .petal {
+                position: absolute; top: -40px;
+                width: 18px; height: 14px;
+                border-radius: 150% 0 150% 0;
+                background: radial-gradient(circle at 30% 30%, #b3364d, var(--maroon-700) 60%, var(--maroon-900));
+                opacity: .9;
+                animation: fall linear forwards;
+            }
+            .petal.leaf { background: radial-gradient(circle at 30% 30%, #2bbf85, var(--emerald-500) 55%, var(--emerald-800)); border-radius: 0 150% 0 150%; }
+            @keyframes fall {
+                to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot)); }
             }
 
-            .staticrypt-instructions {
-                margin-top: -1em;
-                margin-bottom: 1em;
-            }
+            /* ---------- corner florals ---------- */
+            .floral { position: fixed; width: min(42vw, 260px); z-index: 2; pointer-events: none; opacity: .95; }
+            .floral.tl { top: -14px; left: -14px; }
+            .floral.br { bottom: -14px; right: -14px; transform: rotate(180deg); }
 
-            .staticrypt-title {
-                font-size: 1.5em;
+            /* ---------- stage ---------- */
+            .stage {
+                position: relative; z-index: 3;
+                min-height: 100%; display: grid; place-items: center;
+                padding: 16px;
             }
+            .loading { color: var(--gold); font-size: 1.2rem; font-style: italic; letter-spacing: .1em; }
 
-            label.staticrypt-remember {
-                display: flex;
-                align-items: center;
-                margin-bottom: 1em;
+            /* envelope */
+            .envelope {
+                position: relative;
+                width: min(88vw, 360px); aspect-ratio: 1.45;
+                cursor: pointer;
+                perspective: 900px;
+                transition: transform .6s cubic-bezier(.2,.8,.2,1);
+                filter: drop-shadow(0 18px 30px rgba(0,0,0,.45));
             }
-
-            .staticrypt-remember input[type="checkbox"] {
-                transform: scale(1.5);
-                margin-right: 1em;
+            .envelope:hover { transform: translateY(-4px); }
+            .env-back, .env-front, .env-flap {
+                position: absolute; inset: 0;
+                background: linear-gradient(135deg, #f8efe2, #eadcc6 55%, #f3e7d6);
+                border-radius: 6px;
             }
-
-            .hidden {
-                display: none !important;
+            .env-front {
+                z-index: 3;
+                clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+                background: linear-gradient(160deg, #f1e4d1, #e2d1b6);
             }
-
-            .staticrypt-spinner-container {
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .env-flap {
+                z-index: 4;
+                clip-path: polygon(0 0, 100% 0, 50% 58%);
+                background: linear-gradient(180deg, #efe1cc, #dcc9ac);
+                transform-origin: top center;
+                transition: transform .8s cubic-bezier(.4,0,.2,1), z-index 0s .4s;
             }
-
-            .staticrypt-spinner {
-                display: inline-block;
-                width: 2rem;
-                height: 2rem;
-                vertical-align: text-bottom;
-                border: 0.25em solid gray;
-                border-right-color: transparent;
+            .seal {
+                position: absolute; z-index: 5;
+                left: 50%; top: 52%;
+                width: 72px; height: 72px; margin: -36px 0 0 -36px;
                 border-radius: 50%;
-                -webkit-animation: spinner-border 0.75s linear infinite;
-                animation: spinner-border 0.75s linear infinite;
-                animation-duration: 0.75s;
-                animation-timing-function: linear;
-                animation-delay: 0s;
-                animation-iteration-count: infinite;
-                animation-direction: normal;
-                animation-fill-mode: none;
-                animation-play-state: running;
-                animation-name: spinner-border;
+                background: radial-gradient(circle at 35% 30%, #b0283f, var(--maroon-700) 55%, var(--maroon-900));
+                box-shadow: inset 0 0 0 5px rgba(0,0,0,.12), inset 0 -4px 8px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.35);
+                display: grid; place-items: center;
+                transition: transform .5s, opacity .5s;
+                animation: pulse 2.4s ease-in-out infinite;
+            }
+            .seal svg { width: 44px; height: 44px; }
+            @keyframes pulse { 50% { transform: scale(1.07); } }
+            .hint {
+                position: absolute; left: 0; right: 0; bottom: -46px;
+                text-align: center; font-style: italic; color: var(--gold); font-size: 1.1rem; letter-spacing: .05em;
+                transition: opacity .4s;
+            }
+            .letter {
+                position: absolute; z-index: 2;
+                left: 6%; right: 6%; top: 8%; bottom: 6%;
+                background: linear-gradient(180deg, #fffaf2, #f6ecdd);
+                border-radius: 4px;
+                transition: transform .9s cubic-bezier(.2,.9,.25,1) .35s;
+            }
+            .envelope.open { cursor: default; transform: translateY(18vh); }
+            .envelope.open:hover { transform: translateY(18vh); }
+            .envelope.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+            .envelope.open .seal { transform: scale(0) rotate(-40deg); opacity: 0; animation: none; }
+            .envelope.open .hint { opacity: 0; }
+            .envelope.open .letter { transform: translateY(-62%); }
+
+            /* the card that rises out of the envelope */
+            .card {
+                position: fixed; z-index: 6;
+                left: 50%; top: 50%;
+                width: min(90vw, 380px);
+                transform: translate(-50%, -30%) scale(.9);
+                opacity: 0; pointer-events: none;
+                padding: 34px 28px 28px;
+                text-align: center;
+                color: var(--maroon-900);
+                background:
+                    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.9), transparent 60%),
+                    linear-gradient(180deg, #fffaf2, #f4e8d6);
+                border-radius: 10px;
+                border: 1px solid rgba(217,183,121,.6);
+                box-shadow: 0 30px 60px rgba(0,0,0,.45), inset 0 0 0 6px rgba(255,255,255,.5), inset 0 0 0 7px rgba(217,183,121,.45);
+                transition: opacity .7s ease 1s, transform .9s cubic-bezier(.2,.9,.25,1) 1s;
+            }
+            .card.show { opacity: 1; transform: translate(-50%, -62%) scale(1); pointer-events: auto; }
+            .card h1 {
+                margin: 0; font-family: "Great Vibes", cursive; font-weight: 400;
+                font-size: clamp(2.8rem, 12vw, 3.6rem); color: var(--maroon-700); line-height: 1.05;
+            }
+            .card p { margin: 6px 0 20px; font-size: 1.15rem; font-style: italic; color: var(--emerald-800); }
+            .card .divider { width: 120px; margin: 6px auto 10px; display: block; }
+            .field {
+                position: relative; margin-bottom: 14px;
+            }
+            #staticrypt-password {
+                width: 100%;
+                font: inherit; font-size: 1.15rem; text-align: center; letter-spacing: .15em;
+                color: var(--maroon-900);
+                padding: 13px 16px;
+                border: 1px solid rgba(110,20,35,.35);
+                border-radius: 999px;
+                background: rgba(255,255,255,.7);
+                outline: none;
+                transition: border-color .3s, box-shadow .3s;
+            }
+            #staticrypt-password::placeholder { color: rgba(61,8,18,.45); letter-spacing: .05em; font-style: italic; }
+            #staticrypt-password:focus { border-color: var(--emerald-500); box-shadow: 0 0 0 4px rgba(22,156,106,.18); }
+            .unlock {
+                width: 100%;
+                font: inherit; font-size: 1.15rem; letter-spacing: .12em; text-transform: uppercase;
+                color: var(--cream);
+                padding: 13px 16px;
+                border: 0; border-radius: 999px; cursor: pointer;
+                background: linear-gradient(115deg, var(--maroon-900), var(--maroon-500) 45%, #a8293f 52%, var(--maroon-700));
+                background-size: 220% 100%;
+                box-shadow: 0 8px 18px rgba(61,8,18,.35);
+                transition: background-position .8s, transform .2s;
+            }
+            .unlock:hover { background-position: 100% 0; }
+            .unlock:active { transform: scale(.98); }
+            .error {
+                min-height: 1.4em; margin: 12px 0 0;
+                font-style: italic; color: var(--maroon-500); font-size: 1.05rem;
+                opacity: 0; transition: opacity .3s;
+            }
+            .error.on { opacity: 1; }
+            .shake { animation: shake .5s; }
+            @keyframes shake {
+                20%, 60% { transform: translate(calc(-50% - 8px), -62%); }
+                40%, 80% { transform: translate(calc(-50% + 8px), -62%); }
             }
 
-            @keyframes spinner-border {
-                100% {
-                    transform: rotate(360deg);
-                }
+            /* unlock transition */
+            .bloom {
+                position: fixed; z-index: 10; left: 50%; top: 50%;
+                width: 20px; height: 20px; margin: -10px;
+                border-radius: 50%;
+                background: radial-gradient(circle, var(--maroon-500), var(--maroon-900) 60%, var(--emerald-900));
+                transform: scale(0);
+                pointer-events: none;
             }
+            .bloom.go { transition: transform 1.3s cubic-bezier(.7,0,.3,1); transform: scale(220); }
 
-            @media screen and (-webkit-min-device-pixel-ratio: 0) {
-                .staticrypt-form input[type="password"],
-                input[type="text"] {
-                    font-size: 16px;
-                }
+            @media (prefers-reduced-motion: reduce) {
+                .satin, .satin::after, .seal { animation: none; }
+                .petal { display: none; }
             }
         </style>
     </head>
 
     <body class="staticrypt-body">
-        <div id="staticrypt_loading" class="staticrypt-spinner-container">
-            <div class="staticrypt-spinner"></div>
+        <div class="satin"></div>
+        <div id="petals"></div>
+
+        <svg class="floral tl" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+                <radialGradient id="rose" cx="40%" cy="35%">
+                    <stop offset="0" stop-color="#c13a52" />
+                    <stop offset=".6" stop-color="#6e1423" />
+                    <stop offset="1" stop-color="#3d0812" />
+                </radialGradient>
+                <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#2bbf85" />
+                    <stop offset="1" stop-color="#063d2a" />
+                </linearGradient>
+            </defs>
+            <path d="M10 60 C 60 70, 90 90, 120 150" stroke="#d9b779" stroke-width="1.5" fill="none" opacity=".7" />
+            <path d="M60 72 C 50 45, 70 30, 85 42 C 80 60, 70 70, 60 72Z" fill="url(#leaf)" />
+            <path d="M95 105 C 120 90, 140 100, 138 118 C 120 120, 105 115, 95 105Z" fill="url(#leaf)" />
+            <path d="M30 64 C 25 40, 40 25, 52 36 C 48 52, 40 60, 30 64Z" fill="url(#leaf)" />
+            <g transform="translate(58 50)">
+                <circle r="26" fill="url(#rose)" />
+                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
+                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
+                <path d="M-6 -2 C 0 -10, 8 -6, 6 2 C 2 -2, -2 -2, -6 -2Z" fill="#e05a72" opacity=".5" />
+            </g>
+            <g transform="translate(118 150) scale(.7)">
+                <circle r="26" fill="url(#rose)" />
+                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
+                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
+            </g>
+            <g fill="#f7efe4" opacity=".85">
+                <circle cx="100" cy="80" r="4" /><circle cx="106" cy="76" r="3" /><circle cx="22" cy="100" r="3.5" />
+            </g>
+        </svg>
+        <svg class="floral br" viewBox="0 0 200 200" aria-hidden="true">
+            <path d="M10 60 C 60 70, 90 90, 120 150" stroke="#d9b779" stroke-width="1.5" fill="none" opacity=".7" />
+            <path d="M60 72 C 50 45, 70 30, 85 42 C 80 60, 70 70, 60 72Z" fill="url(#leaf)" />
+            <path d="M95 105 C 120 90, 140 100, 138 118 C 120 120, 105 115, 95 105Z" fill="url(#leaf)" />
+            <g transform="translate(58 50)">
+                <circle r="26" fill="url(#rose)" />
+                <path d="M-14 -4 C -10 -18, 10 -20, 14 -6 C 8 -12, -6 -12, -14 -4Z" fill="#e05a72" opacity=".55" />
+                <path d="M-10 6 C -4 -8, 12 -6, 12 6 C 6 0, -4 0, -10 6Z" fill="#3d0812" opacity=".55" />
+            </g>
+            <g fill="#f7efe4" opacity=".85"><circle cx="100" cy="80" r="4" /><circle cx="106" cy="76" r="3" /></g>
+        </svg>
+
+        <div id="staticrypt_loading" class="stage">
+            <div class="loading">a moment…</div>
         </div>
 
-        <div id="staticrypt_content" class="staticrypt-content hidden">
-            <div class="staticrypt-page">
-                <div class="staticrypt-form">
-                    <div class="staticrypt-instructions">
-                        <p class="staticrypt-title">Mehara</p>
-                        <p>Enter the password.</p>
-                    </div>
-
-                    <hr class="staticrypt-hr" />
-
-                    <form id="staticrypt-form" action="#" method="post">
-                        <div class="staticrypt-password-container">
-                            <input
-                                id="staticrypt-password"
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                autofocus
-                            />
-
-                            <img
-                                class="staticrypt-toggle-password-visibility"
-                                alt="Show password"
-                                title="Show password"
-                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
-                            />
-                        </div>
-
-                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
-                            <input id="staticrypt-remember" type="checkbox" name="remember" />
-                            Remember me
-                        </label>
-
-                        <input type="submit" class="staticrypt-decrypt-button" value="DECRYPT" />
-                    </form>
+        <div id="staticrypt_content" class="stage hidden">
+            <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+                <div class="env-back"></div>
+                <div class="letter"></div>
+                <div class="env-front"></div>
+                <div class="env-flap"></div>
+                <div class="seal">
+                    <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <g fill="none" stroke="#e8b5a0" stroke-width="1.6" stroke-linecap="round" opacity=".85">
+                            <circle cx="20" cy="20" r="16" stroke-width="1" opacity=".6" />
+                            <path d="M20 12 C 16 12, 14 16, 17 18 C 13 19, 14 24, 18 23 C 18 27, 22 27, 22 23 C 26 24, 27 19, 23 18 C 26 16, 24 12, 20 12Z" />
+                            <circle cx="20" cy="19" r="2" />
+                        </g>
+                    </svg>
                 </div>
+                <div class="hint">tap the seal</div>
+            </div>
+
+            <div class="card" id="card">
+                <h1>Mehara</h1>
+                <svg class="divider" viewBox="0 0 120 12" aria-hidden="true">
+                    <path d="M0 6 H48 M72 6 H120" stroke="#d9b779" stroke-width="1" />
+                    <path d="M60 1 C 56 1, 54 5, 57 6 C 54 7, 56 11, 60 11 C 64 11, 66 7, 63 6 C 66 5, 64 1, 60 1Z" fill="#6e1423" />
+                </svg>
+                <p>A letter, sealed just for you.</p>
+                <form id="staticrypt-form" action="#" method="post" autocomplete="off">
+                    <div class="field">
+                        <input
+                            id="staticrypt-password"
+                            type="password"
+                            name="password"
+                            placeholder="the secret word"
+                            autocomplete="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                        />
+                    </div>
+                    <input type="submit" class="unlock" value="Open" />
+                    <div class="error" id="error" aria-live="polite">Not quite, try again</div>
+                </form>
             </div>
         </div>
 
+        <div class="bloom" id="bloom"></div>
+
         <script>
-            // these variables will be filled when generating the file - the template format is 'variable_name'
+            // filled in by StatiCrypt at build time
             const staticryptInitiator = ((function(){
   const exports = {};
   const cryptoEngine = ((function(){
@@ -816,75 +924,95 @@ exports.init = init;
 
   return exports;
 })());
-            const templateError = "Bad password!",
-                templateToggleAltShow = "Show password",
-                templateToggleAltHide = "Hide password",
-                isRememberEnabled = true,
-                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"21fad00131fee4b7dbffd515f84ea9d7dd09072d9c228cb89781be26dcdf42af37c42504ff5ff950f69e95ece430bafb245d70ad446d6029702629b5fe050f9cb32b527812afbfbe4894bf1fcfc9b5e2d69bd70072fd12e8abdb47a628d6054f6860ff7cd70de027bc1cac3851fa04806d2ee1872108b7824b9d66d3cfa5032438157e03a8ee0c6fc725d942cd2b0d113d258ca3796c65aa7046b609c8f6fa13de347bb76a597769101e1de542cb518ced80e9507cf8fe0f6943ebadf4a9309888837fb6e96b46423ae4f402dd89f11f70e13c4da8eae97ed64143d68c3b4d433edc9c8de6eba44356a6ebe874ceeeb582e610f74418e7393577dc639025c0659304f1f0b5e986e198b52a65f5de27b377b6a375ccd8f1e1a06dbc548fa4465246f2c00d4ae3b0885b64f3ef0e652886dc2a68a31020d0e8b8878021c52b477331b6923ace34acdc70f72bc8eec34fea54018bb8b733da9a0d5fd09ca8a6e427e90b89c70a17acb5d25ea58f1222b561b0a0beaaa48452093d2ef882195d09875d0e78a687dbca0d3a298b9705cadbebfe93e70e588bd4b9e366930c8613f5cae5a343a76e9c2ac3c6ced497011498da33b5c94f1903f4e42349695b6eb7f24cfc8daa899571e183ccafdfe259620a79ea1eb1d68b270d10e8a61140b492955611a0ed070d595b012fe80990d52ab24e743a09908a4ffa059ebf297979ae8e2f16722a5c2019e59cb25e34d29bea3bb63749a3e7170f269e34a1336cfd2dd8e90efd7d352fe00b8c87abe007d339c0e6c83c062b787daf6c87ddd581b3f4344505ea185e2fa9c5a4de28c11f3a35227b00003338211f5244ed153157ad526dfea817bb5d246895b12482f2ecdca948feb9dd9583437e253ccc7f3fc30c0e3b3697e972dc3b50d216807fe604be95fdc3e55ba58632f024d50e515e9db9196ec829f9d5f4dc7c41df3fadb2dd2296abd791bed7a07301022910ec4fb92e4fb5812cb949fa71dab0766f26eb42fab7510d3d69d9ac682116221b03b1b5a51cdfb503cefc61258ee98a563e33bef2bf060271032752a9c77e7bf0854250e5ab04fb1f573b74c32fe163571dedfdc2fb0d445a9ded7a3b6236916bb3cd5cef76c005b79ec0f341c13f21d7ba947651bcaaa8cc34ed3565689e8045f6a1187e699468bbd677c0313bf50152e1c01da9fee51c0c642d0c184fa2c90ea8927fa4cc99d2f1ab2cd35d41e8742fdfafba22e46b835298864badbc17962513e40550a9449beb8c06a492cd5d5a5e71cece1f8bad23","isRememberEnabled":true,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"93bb1ecaa5809486b2054ec46c6aa569"};
+            const isRememberEnabled = false,
+                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"d472b1024d9bd5576cb8d2ef9ff350ba8672aa91a30ed4bf0a805266632885dbe0ce50ec42b9cf9c69ebc9a0bfed0552a18c9131d55fda875b88f04bff94b045f22bea48e0e391b458c86db4e327c4ff7026f9de666fab30864f8d78de926e5b0388a2b4ec14dad87cb037d26f0b2d0f032cd0bc62fd6dd6ae258621cadfa8a99547e171a8b052246e21aa9b1a7dd96ef10af2a64588a2eec2709435807e357e56248b5ad6896dabd3de463c2432ab4efb53b88862203c77fca58605791f2733374f314c1623e160a264704aea1013821698519fb9cc14cbda096d8fa5e94e069c6f381e6a12fa862a4acfb7cec03fa735370c0462d3e808df32cded725a6eefb4bcaf36805d03c55d3a5ebe59fbff6980569c00c4a394e34df608d526f1121f81ddbfbf6edfda81487f422cc6eaf3ec7f7987485858d3922619187d31902545b33c72088d8a822239fef2f0168cff728d69a403f2b0dc0b56cf4653a62bb2b5fd452c83b722eb6e296425d965ab7af45a23f009ae5306477e116d4fea3c90ebbf1fd5493dcb2516eabe3ff6ae4c7221b389d2d09a3afdc3525bf93a4e7c44e43b51a747a8f3526defa58ab5206a1cdd6754ca2d3bf0d38d6dd396e8a60eb86553e8abfeb42a7d6ac7fde77c25101425e99dc0e277d16612d278029e2d7062d6e53432360d53cf01a8a6b3486675439e0d54fc57994dddd7b0ff6efddc4e74c5f9da56e6e3a9f7e0c9d0252d8712241de6f077c1e639f7b147dd9ac2a60c65519c343a33166a34764dc0f80324872f7f9ad8e07bfac1d6f83e18dc30fd8f4f5beb5d9655cdd2b4a47c8c77c8fad99ba5f3e026e1acde8991b04d756e82effcf7e8a6b4b6c4fb6b4210126e0dddba9f40152175d8ce5efb4f8c6d66cac6fdc31e66e21d9d7b1e6c6d53f2660c03a6d7e37f3f6c16f8dcb4cb348b5885285ad6e1362c80e64e7049eba2e8f031f0813721918277ed1aaef87711f325e3319b7b7219446bc2c3e33c1ddd0c2922a059cdb43f3ce948052012abf69a57a95d1b46a106f692825337d41b828c7c4afe2c0df17cc4b56499286ca22cba754a1303b260f249b4fb72e45efef8df9a7a2ede1564e257b6277cd434e9680b09c14d9ed78fed1f6e646f70be3b344eff15255e92a253282d6782d44c6716a28dc83483c373f7771d826ef59351bdd470b8ddbc644a9b3aedc7d624d863954cf33287adf42d4a19948dfc64c8fd299955a509f8b40f5895cdb3ae1a9b3672f5a5370c48a37ee811f1c0a15fd209d509e7d67d1d624149c8ea979f920b4a5d59ed84111a4f575bf3b1feed8a5f2d33740fa7f4ee53e403ede4d3477204ff180e286150e588597b8623878bfcec459244cbf0823579bc53dcd4bc6f9cc0df8f3307e8df59727bf97fad5f9b97c5a0bdcecbe4d597c3f1ed8fa3f7a038a444c00009ae9d8722b6df2fbc0ce4f9cd3b2c9778f2204fd6e91106fc1f6a59133c4c2e84a4fdf05f72cc2f9a71539552ca5f2711c0e27895142cafd5412e3581463a956f149b6149814a5c16dbd2e6caa0173760ea738e50b5798715aaf286ad14e553267a3c1bb65052188856701192d717ddfff4edef4151bded7b2de61d0032234a903030b066f3156eaf66cbe87b11ee87ce8c536cf162db22946b03822cfd422af98ec8fda0d67511124194b3c21f7bd715813f1338cb5cf543fe5f076ecfee5658b1c8130e21b1a892b135fae01b0786c4ee4a9db883513ca9d1c0485e70e34d520d9a65ee0eadc735eade62c5aa1331492a1e9411417bd3f4b95aed792e9ad801fbe4f4c6cbdffae202d269cccd972ec29b4ea372161827cf56dd321efcf130ec3fd2f1b2e584ff47ae8efd8dc7423938e8ace3c2d046fc31f1f224633134b76ea0ff24b6337be829e611b1f784f3d78e8fc96037a1782828eb6e58733e3be76d3061bc3ee4312e17913c72aa2e8c1625971ba1d7a5f6c723a581e7b47aae5658fc282a8ada4b1d31c2d012798245586fae52566c02bf14313c8c35945d447b4343d5d486a9582f358d020ff50a21526163c2722a0c87291074b19d05077f23c9506d2fd5e5e89282ee50445c38ce9978e7a76a0c4ea3b3779202beb3a0dc67e235a691790874c9bf6dd5d598c90c00e421931635f1a46684d61fcddc3dd4cb12de71849e2374f3468839e688e8f3048ea8a864aee5662ff727e455016442d6962f7164ca747e675f8e420db9c81fd3faef52b1ee50aa96b290fbf3609fe03276216952f19b8b01c596a3ab75def340fe390bbcf373ef1c76c5883db781e8ebe2e3d2a58e79f31a5c15b0c2bfd50272e31a67995a928f9279c9d964156670759f274fb70c14a0d19c441c18739b5b7bf9aa6d2e98da1acdbe47b1a1fab2e9513360734b3e5fdbb39e0531a884c8677dc2e5aaab1ad3d1ea8b0ac5e5cf495e2b0f567738a206ccc3cc6f7066cc1fbea4747ebb97d76ba50b1b3f570e72a66b876e4816878264a82cd3fb3f98ec915871ece1c1f85171ec8c894c69d9e27d8d58427a05a945fa4cd7edf04be37cb601751ed1d1a1fc48fa4d070e94b62b0aadf68c643b71f3ca813d21d45d4540898267cc325a4f7dd1eca71dae2d7a24ccb462a766c1d97d8a583494856b231f3de797380794d4c1136da103946489c046f085f9aa7924d294377cec7b89472560cfd1160df172ad2d3eaef1880a2be81265036c8f3bada3d8790adc194619c7b0f8def767d4837cab2b800e50af543d840370518d920266c4456dac31772ab091fe1f8a1f2ebfef1d3842db1c4c1cc8375ee6f2dd269f1269a4c468069b6058e6313969b28f7e71ea7a60f2301aef563e22641f00be6c072db1c76a85c4e465ab39722678add999d42cc7beb5bbfd411704e31db01dad0be8cf6afe252eae8d3943d06a21c6013de8e839d6ca00898241fdb68998ef1439b5a34ce73f03addce8ccb77dd622d3a19f2241ecd4a306e53000f74ee33ed3dd287a6270092433e30ea455a42d90f5467f30b483599d5f9df2bfdde0b1a4c5c0fce7d7356b2c11ffdc94b6ed4b2bc5cfbd757fe1e7a6ec06e365d9495fca80336a008abbca984f25c8c65af620066bc3dac533ecf5c00048131fa2dcdcfe1751853a3ae4e382f940d8db84aa837d803b98e3f60b240dc104bff4477e12b52c091b2c1857a823e4b1b6ccc985d7e1a50050bf164b424d4cbcbf1b0f5d6ffd5432e5e997f54ea94253fc3d93b8c08ed49db2fa56ddfcb62c54409996497ba92ab119ab3a37487170107908c848d0e5edc5c9f899c90a7ff8376dbb01299c791b2d29c89837b080a2b26d95729abf2032b07ef0f57036b010063deb099842b8ab1176a192deb47a027521e45d15b3c81422e6caf2da1a610c470470f6dfa8aa84b71b268bd6b4d3e46b306ded1e9d77c29493d3b2733a1db51753e3c71b9d95c641e2df2ff751a9b0c49db082f52e61396a3aec392c3a2cfb9373986db27bb9ec7b2bd4da413fe2ef016691bc01b09a0da461c0f81431d527f619e994b9b07925330bd7680e19dbe986cace491fa7b3ff491a81d20eac242ca0f52512701db4c5f0c9a32e7e8eb68687eb5dca8a196c1429c7743f29d1e55cd8fb35b99dea19c7f6769c4e4984486dffa0cd871478501fa6d32a98964871d3b0c80bc34c087c8c00d9dd218d0ff11a4bcb073cc7bff1e501ab21779790f4cc2547398d50e5d4b9b627ba12289b4de58824b11fd1ecba2f9b7d4eb7b95f2654a422b85fd238d9f363d92555425999f8180dc5eeb8aa35922cd7","isRememberEnabled":false,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"93bb1ecaa5809486b2054ec46c6aa569"};
 
-            // you can edit these values to customize some of the behavior of StatiCrypt
+            // never keep her (or anyone) signed in: wipe any saved password from older builds
+            try {
+                localStorage.removeItem("staticrypt_passphrase");
+                localStorage.removeItem("staticrypt_expiration");
+            } catch (e) {}
+
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            // play the bloom, then swap in the decrypted page
             const templateConfig = {
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
-                replaceHtmlCallback: null,
+                replaceHtmlCallback: function (plainHTML) {
+                    const swap = () => {
+                        document.open();
+                        document.write(plainHTML);
+                        document.close();
+                    };
+                    if (reduceMotion) return swap();
+                    burst(70);
+                    document.getElementById("bloom").classList.add("go");
+                    setTimeout(swap, 1350);
+                },
                 clearLocalStorageCallback: null,
             };
 
-            // init the staticrypt engine
             const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
 
-            // try to automatically decrypt on load if there is a saved password
+            // ---------- petals ----------
+            const petals = document.getElementById("petals");
+            function petal(fromTop) {
+                const el = document.createElement("div");
+                el.className = "petal" + (Math.random() < 0.25 ? " leaf" : "");
+                const size = 10 + Math.random() * 14;
+                el.style.width = size + "px";
+                el.style.height = size * 0.78 + "px";
+                el.style.left = Math.random() * 100 + "vw";
+                if (fromTop === false) el.style.top = 40 + Math.random() * 20 + "vh";
+                el.style.setProperty("--dx", (Math.random() * 40 - 20) + "vw");
+                el.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+                el.style.animationDuration = 7 + Math.random() * 8 + "s";
+                petals.appendChild(el);
+                el.addEventListener("animationend", () => el.remove());
+            }
+            function burst(n) { for (let i = 0; i < n; i++) setTimeout(() => petal(false), i * 12); }
+            if (!reduceMotion) {
+                for (let i = 0; i < 10; i++) setTimeout(petal, i * 400);
+                setInterval(petal, 700);
+            }
+
+            // ---------- envelope -> card ----------
+            const envelope = document.getElementById("envelope"),
+                card = document.getElementById("card"),
+                input = document.getElementById("staticrypt-password"),
+                error = document.getElementById("error");
+            function openEnvelope() {
+                if (envelope.classList.contains("open")) return;
+                envelope.classList.add("open");
+                card.classList.add("show");
+                if (!reduceMotion) burst(24);
+                setTimeout(() => input.focus(), 1500);
+            }
+            envelope.addEventListener("click", openEnvelope);
+            envelope.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEnvelope(); }
+            });
+
             window.onload = async function () {
                 const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
-
-                // if we didn't decrypt anything on load, show the password prompt. Otherwise the content has already been
-                // replaced, no need to do anything
                 if (!isSuccessful) {
-                    // hide loading screen
                     document.getElementById("staticrypt_loading").classList.add("hidden");
                     document.getElementById("staticrypt_content").classList.remove("hidden");
-                    document.getElementById("staticrypt-password").focus();
-
-                    // show the remember me checkbox
-                    if (isRememberEnabled) {
-                        document.getElementById("staticrypt-remember-label").classList.remove("hidden");
-                    }
                 }
             };
 
-            // toggle password visibility
-            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
-            // these two icons are coming from FontAwesome
-            const imgSrcEyeClosed =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
-            const imgSrcEyeOpened =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
-            toggleIcon.addEventListener("click", function () {
-                const passwordInput = document.getElementById("staticrypt-password");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    toggleIcon.src = imgSrcEyeOpened;
-                    toggleIcon.alt = templateToggleAltHide;
-                    toggleIcon.title = templateToggleAltHide;
-                } else {
-                    passwordInput.type = "password";
-                    toggleIcon.src = imgSrcEyeClosed;
-                    toggleIcon.alt = templateToggleAltShow;
-                    toggleIcon.title = templateToggleAltShow;
-                }
-            });
-
-            // handle password form submission
+            // ---------- submit ----------
             document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
                 e.preventDefault();
-
-                const password = document.getElementById("staticrypt-password").value,
-                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
-
-                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
-
+                error.classList.remove("on");
+                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(input.value, false);
                 if (!isSuccessful) {
-                    alert(templateError);
+                    error.classList.add("on");
+                    card.classList.remove("shake");
+                    void card.offsetWidth;
+                    card.classList.add("shake");
+                    input.select();
                 }
             });
         </script>
